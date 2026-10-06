@@ -1,0 +1,1701 @@
+You are an expert full-stack engineer, UI/UX designer, Supabase architect,
+AI integration engineer, and security engineer.
+
+I want you to build a COMPLETE production-quality web application inspired by
+the design, UX flow, feature structure, and visual quality of this reference:
+
+REFERENCE WEBSITE:
+https://zero-plate-five.vercel.app/
+
+REFERENCE GITHUB:
+https://github.com/AkshMaheshwari/ZeroPlate
+
+IMPORTANT:
+Do NOT simply clone or copy the source code.
+Do NOT copy copyrighted assets.
+Do NOT copy their branding/logo.
+Use the reference only to understand the design language, layout patterns,
+feature organization, dashboards, cards, navigation, maps, charts and overall UX.
+
+My application should be an improved and original version of the concept.
+
+====================================================
+1. PROJECT NAME
+====================================================
+
+Name:
+
+FOODBRIDGE
+
+Tagline:
+
+"Rescue surplus food. Connect communities. Reduce waste."
+
+Core problem:
+
+Build a platform connecting:
+
+Restaurants
+Stores
+Households
+College messes
+Event organizers
+
+with:
+
+NGOs
+Food banks
+Community organizations
+Volunteers
+
+so surplus food can be redistributed before it becomes waste.
+
+====================================================
+2. PRIMARY GOAL
+====================================================
+
+Build a complete full-stack food redistribution platform.
+
+The platform must allow:
+
+1. Donors to create surplus food donations.
+2. NGOs to discover nearby available donations.
+3. Volunteers to accept pickup tasks.
+4. Admins to monitor the entire ecosystem.
+5. Users to track donation status.
+6. AI to provide food-waste insights.
+7. Maps to locate NGOs and donations.
+8. Analytics to show food saved and impact.
+9. Authentication using Supabase.
+10. Persistent data using Supabase PostgreSQL.
+11. Real-time updates using Supabase Realtime.
+12. Secure role-based access using Supabase RLS.
+
+The application must be fully functional, not just a static UI.
+
+====================================================
+3. TECHNOLOGY STACK
+====================================================
+
+Frontend:
+
+- Next.js 14+
+- React
+- TypeScript
+- Tailwind CSS
+- shadcn/ui
+- Lucide React icons
+- Recharts
+- Leaflet
+- React-Leaflet
+
+Backend:
+
+- Next.js API routes/server actions where necessary
+- Supabase
+
+Database:
+
+- Supabase PostgreSQL
+
+Authentication:
+
+- Supabase Auth
+
+Storage:
+
+- Supabase Storage
+
+Realtime:
+
+- Supabase Realtime
+
+AI:
+
+- Google Gemini API
+
+Maps:
+
+- Leaflet
+- OpenStreetMap
+
+Voice:
+
+- Browser Web Speech API
+
+Deployment:
+
+- Replit
+- Vercel-compatible architecture
+
+====================================================
+4. DESIGN DIRECTION
+====================================================
+
+Create a premium modern SaaS-style UI inspired by the reference website.
+
+Visual style:
+
+- dark navy background
+- modern glassmorphism cards
+- subtle borders
+- rounded corners
+- blue/purple/green accent colors
+- large clean typography
+- smooth hover animations
+- subtle gradients
+- minimal shadows
+- professional dashboard
+- responsive layout
+- mobile-first design
+
+Do NOT make the interface look like a generic admin template.
+
+The UI should feel like a modern AI + sustainability startup.
+
+Use:
+
+- dark #070B18 / #0B1020 style background
+- white/light gray typography
+- purple/blue gradients
+- green sustainability accents
+- glass cards
+- rounded 16-24px cards
+- animated counters
+- clean charts
+
+Use consistent spacing.
+
+Use Lucide icons.
+
+Add subtle animations using Framer Motion where useful.
+
+====================================================
+5. LANDING PAGE
+====================================================
+
+Create a premium landing page.
+
+Navbar:
+
+Logo:
+FOODBRIDGE
+
+Navigation:
+
+Home
+How It Works
+Features
+Impact
+Organizations
+Login
+Get Started
+
+Hero section:
+
+Headline:
+
+"Turn Surplus Food Into Community Impact."
+
+Subtitle:
+
+"Connect surplus food from restaurants, stores, households and events
+with verified organizations that can redistribute it to people in need."
+
+Buttons:
+
+"Donate Food"
+
+"Find Food"
+
+Secondary CTA:
+
+"See How It Works"
+
+Hero visual:
+
+Create an animated dashboard-style visual showing:
+
+Food Donation
+↓
+AI Matching
+↓
+Nearby NGO
+↓
+Volunteer Pickup
+↓
+Successful Redistribution
+
+Add floating statistics:
+
+10,000+ Meals Rescued
+500+ Donations
+120+ Organizations
+95% Successful Pickups
+
+Do not use fake claims as if they are real.
+Clearly treat these as demo statistics until real data exists.
+
+====================================================
+6. HOW IT WORKS
+====================================================
+
+Create a 4-step section.
+
+STEP 1:
+
+Post Surplus
+
+Donor enters:
+
+Food name
+Food category
+Quantity
+Preparation time
+Expiry/use-by time
+Pickup location
+Food condition
+Photo
+
+STEP 2:
+
+AI Matching
+
+AI analyzes:
+
+Food type
+Quantity
+Distance
+Expiry time
+Organization capacity
+Organization preferences
+
+STEP 3:
+
+Volunteer Pickup
+
+Nearby volunteers can accept the pickup.
+
+STEP 4:
+
+Redistribution
+
+NGO receives the food.
+
+Donation status changes:
+
+AVAILABLE
+CLAIMED
+PICKUP_ASSIGNED
+PICKED_UP
+DELIVERED
+COMPLETED
+EXPIRED
+CANCELLED
+
+====================================================
+7. AUTHENTICATION
+====================================================
+
+Use Supabase Auth.
+
+Authentication methods:
+
+Email + Password
+
+Google OAuth if configured.
+
+Create:
+
+/login
+/signup
+/forgot-password
+
+During signup ask:
+
+Full Name
+Email
+Password
+Phone
+Role
+
+Roles:
+
+DONOR
+NGO
+VOLUNTEER
+ADMIN
+
+Do NOT allow users to select ADMIN from normal public signup.
+
+Admin accounts must be created manually or through a secure admin mechanism.
+
+After login redirect based on role.
+
+DONOR → /donor/dashboard
+NGO → /ngo/dashboard
+VOLUNTEER → /volunteer/dashboard
+ADMIN → /admin/dashboard
+
+====================================================
+8. SUPABASE DATABASE
+====================================================
+
+Create the following PostgreSQL tables.
+
+TABLE: profiles
+
+id UUID PRIMARY KEY REFERENCES auth.users(id)
+
+full_name
+email
+phone
+role
+avatar_url
+organization_name
+created_at
+updated_at
+
+role values:
+
+DONOR
+NGO
+VOLUNTEER
+ADMIN
+
+------------------------------------
+
+TABLE: donations
+
+id UUID PRIMARY KEY
+
+donor_id UUID
+food_name TEXT
+food_category TEXT
+description TEXT
+quantity NUMERIC
+quantity_unit TEXT
+prepared_at TIMESTAMP
+expiry_at TIMESTAMP
+pickup_address TEXT
+latitude NUMERIC
+longitude NUMERIC
+food_condition TEXT
+image_url TEXT
+status TEXT
+claimed_by UUID
+created_at
+updated_at
+
+status:
+
+AVAILABLE
+CLAIMED
+PICKUP_ASSIGNED
+PICKED_UP
+DELIVERED
+COMPLETED
+EXPIRED
+CANCELLED
+
+------------------------------------
+
+TABLE: organizations
+
+id UUID PRIMARY KEY
+
+owner_id UUID
+name TEXT
+description TEXT
+phone TEXT
+email TEXT
+address TEXT
+latitude NUMERIC
+longitude NUMERIC
+capacity NUMERIC
+accepted_food_types TEXT[]
+verified BOOLEAN
+created_at
+updated_at
+
+------------------------------------
+
+TABLE: volunteers
+
+id UUID PRIMARY KEY
+
+user_id UUID
+vehicle_type TEXT
+availability BOOLEAN
+latitude NUMERIC
+longitude NUMERIC
+rating NUMERIC
+total_pickups INTEGER
+created_at
+
+------------------------------------
+
+TABLE: pickup_tasks
+
+id UUID PRIMARY KEY
+
+donation_id UUID
+volunteer_id UUID
+ngo_id UUID
+pickup_address TEXT
+delivery_address TEXT
+scheduled_at TIMESTAMP
+picked_up_at TIMESTAMP
+delivered_at TIMESTAMP
+status TEXT
+created_at
+updated_at
+
+------------------------------------
+
+TABLE: feedback
+
+id UUID PRIMARY KEY
+
+user_id UUID
+rating INTEGER
+category TEXT
+message TEXT
+sentiment TEXT
+ai_summary TEXT
+created_at
+
+------------------------------------
+
+TABLE: waste_logs
+
+id UUID PRIMARY KEY
+
+donor_id UUID
+food_name TEXT
+meal_type TEXT
+quantity NUMERIC
+quantity_unit TEXT
+reason TEXT
+created_at
+
+------------------------------------
+
+TABLE: impact_metrics
+
+id UUID PRIMARY KEY
+
+organization_id UUID
+meals_rescued INTEGER
+food_saved_kg NUMERIC
+donations_completed INTEGER
+co2_saved_kg NUMERIC
+updated_at
+
+------------------------------------
+
+TABLE: notifications
+
+id UUID PRIMARY KEY
+
+user_id UUID
+title TEXT
+message TEXT
+type TEXT
+read BOOLEAN DEFAULT false
+created_at
+
+====================================================
+9. DATABASE SECURITY
+====================================================
+
+Enable Row Level Security on ALL tables.
+
+Create proper RLS policies.
+
+Users can:
+
+- read/update their own profile
+- donors can create their own donations
+- donors can update their own donations
+- NGOs can view available donations
+- NGOs can claim appropriate donations
+- volunteers can view pickup tasks assigned to them
+- volunteers can update pickup status
+- admins can access everything
+
+Never expose Supabase service-role credentials to the browser.
+
+====================================================
+10. SUPABASE STORAGE
+====================================================
+
+Create Storage buckets:
+
+avatars
+food-images
+organization-documents
+
+Food donors can upload food images.
+
+NGOs can upload verification documents.
+
+Users can upload profile images.
+
+Use signed/public URLs appropriately.
+
+====================================================
+11. DONOR DASHBOARD
+====================================================
+
+Route:
+
+/donor/dashboard
+
+Create beautiful dashboard.
+
+Top statistics:
+
+Total Donations
+Food Rescued
+Successful Pickups
+People Served
+
+Sections:
+
+Recent Donations
+
+Donation Status
+
+Upcoming Pickups
+
+Impact Overview
+
+Quick Action:
+
+"+ Donate Surplus Food"
+
+====================================================
+12. DONATE FOOD PAGE
+====================================================
+
+Route:
+
+/donor/donate
+
+Form fields:
+
+Food Name
+Food Category
+Description
+Quantity
+Unit
+
+Meal Type:
+
+Breakfast
+Lunch
+Dinner
+Snacks
+Packaged
+
+Prepared At
+
+Best Before
+
+Food Condition
+
+Pickup Address
+
+Use current location button.
+
+Upload food image.
+
+Submit button:
+
+"Find Organizations"
+
+After submission:
+
+Use location + food category + quantity + expiry time
+to find suitable nearby organizations.
+
+====================================================
+13. AI MATCHING
+====================================================
+
+Use Gemini API.
+
+AI should analyze the donation and generate:
+
+Food category
+Urgency level
+Suggested recipient type
+Food safety warning
+Recommended pickup priority
+
+Example:
+
+Donation:
+
+"50 packets of cooked rice prepared 1 hour ago"
+
+AI response:
+
+Category: Cooked Food
+Urgency: HIGH
+Recommended pickup window: 2 hours
+Suitable organizations: Food shelters / community kitchens
+
+IMPORTANT:
+
+AI must NOT make unsafe claims about food safety.
+
+Show a disclaimer:
+
+"AI suggestions are informational. Follow applicable food-safety regulations."
+
+====================================================
+14. NGO DASHBOARD
+====================================================
+
+Route:
+
+/ngo/dashboard
+
+Display:
+
+Available Donations
+Nearby Donations
+Claimed Donations
+Completed Donations
+Organization Capacity
+Meals Distributed
+
+Create donation cards.
+
+Each card should display:
+
+Food name
+Quantity
+Distance
+Expiry countdown
+Pickup location
+Food category
+Donor
+Created time
+
+Buttons:
+
+VIEW
+CLAIM
+CONTACT
+
+====================================================
+15. NGO MAP
+====================================================
+
+Route:
+
+/ngo/map
+
+Use:
+
+Leaflet
+React-Leaflet
+OpenStreetMap
+
+Display:
+
+NGOs
+Donors
+Available food
+Pickup locations
+
+Markers should have different icons.
+
+Click marker:
+
+Show popup.
+
+Popup:
+
+Food name
+Quantity
+Distance
+Expiry
+Organization
+"View Donation"
+
+Add filters:
+
+Within 5 km
+Within 10 km
+Within 25 km
+Food category
+Urgency
+
+Do NOT use Google Maps unless absolutely necessary.
+
+Prefer OpenStreetMap because it does not require a Google Maps API key.
+
+====================================================
+16. VOLUNTEER DASHBOARD
+====================================================
+
+Route:
+
+/volunteer/dashboard
+
+Display:
+
+Available Pickup Requests
+
+Each request:
+
+Pickup location
+Destination
+Distance
+Food quantity
+Urgency
+Estimated travel time
+
+Buttons:
+
+Accept Pickup
+
+Reject
+
+After accepting:
+
+Show navigation/map.
+
+Status workflow:
+
+ASSIGNED
+ON_THE_WAY
+PICKED_UP
+DELIVERED
+
+Allow volunteer to update status.
+
+====================================================
+17. ADMIN DASHBOARD
+====================================================
+
+Route:
+
+/admin/dashboard
+
+Create the most advanced dashboard.
+
+Top cards:
+
+Total Donations
+Food Rescued
+Active Organizations
+Active Volunteers
+Completed Pickups
+Expired Donations
+
+Charts:
+
+Food rescued over time
+Donations per day
+Waste by category
+Donation status
+Organization performance
+Volunteer performance
+
+Use Recharts.
+
+Charts must use real Supabase data.
+
+Do not hardcode chart values.
+
+====================================================
+18. WASTE ANALYTICS
+====================================================
+
+Route:
+
+/admin/analytics
+
+Show:
+
+Daily waste
+Weekly waste
+Monthly waste
+Most wasted foods
+Most common waste reasons
+Average donation quantity
+
+AI Insights:
+
+"Rice is the most frequently wasted food."
+
+"Friday has 18% higher waste than the weekly average."
+
+"Consider reducing dinner production by approximately X%."
+
+Clearly mark AI-generated insights.
+
+====================================================
+19. FEEDBACK SYSTEM
+====================================================
+
+Route:
+
+/feedback
+
+Users can submit:
+
+Rating
+Category
+Comment
+
+Add:
+
+🎤 Voice Feedback
+
+Use Web Speech API.
+
+Example:
+
+User says:
+
+"The food was too salty today."
+
+Convert speech → text.
+
+Then send feedback to backend.
+
+Use Gemini to classify:
+
+Positive
+Neutral
+Negative
+
+Also generate:
+
+Short summary
+
+Possible improvement
+
+Store everything in Supabase.
+
+====================================================
+20. AI INSIGHTS PAGE
+====================================================
+
+Route:
+
+/admin/ai-insights
+
+Create an attractive AI dashboard.
+
+Cards:
+
+Waste Prediction
+Donation Forecast
+Food Demand
+Pickup Risk
+Urgent Donations
+
+Use Gemini.
+
+Example:
+
+"Based on the last 30 days of data, food waste is highest during dinner."
+
+Add:
+
+Generate New Insights
+
+Never expose the Gemini API key in frontend code.
+
+Use a server-side API route.
+
+====================================================
+21. IMPACT DASHBOARD
+====================================================
+
+Create:
+
+/impact
+
+Display:
+
+Meals Rescued
+Food Saved KG
+Donations Completed
+CO2 Impact Estimate
+Organizations Helped
+Volunteers Involved
+
+Use animated counters.
+
+Add charts.
+
+Add:
+
+"This month's impact"
+
+====================================================
+22. NOTIFICATIONS
+====================================================
+
+Create notification system using Supabase.
+
+Notify donor when:
+
+Donation claimed
+Pickup assigned
+Food picked up
+Food delivered
+Donation completed
+
+Notify NGO when:
+
+New nearby donation
+Donation claim accepted
+
+Notify volunteer when:
+
+Pickup assigned
+Pickup cancelled
+
+Use Supabase Realtime.
+
+Create notification bell in navbar.
+
+====================================================
+23. REAL-TIME FUNCTIONALITY
+====================================================
+
+Use Supabase Realtime for:
+
+Donation status
+Pickup status
+Notifications
+Dashboard updates
+
+Example:
+
+When NGO claims a donation:
+
+DONOR DASHBOARD
+
+should automatically update:
+
+AVAILABLE → CLAIMED
+
+without page refresh.
+
+====================================================
+24. SEARCH AND FILTERING
+====================================================
+
+Add global search.
+
+Search:
+
+Food
+Donation
+Organization
+Location
+
+Filters:
+
+Food type
+Distance
+Status
+Urgency
+Date
+Quantity
+
+====================================================
+25. RESPONSIVE DESIGN
+====================================================
+
+Must work perfectly on:
+
+Desktop
+Laptop
+Tablet
+Mobile
+
+Desktop:
+
+Sidebar + content.
+
+Mobile:
+
+Bottom navigation or collapsible sidebar.
+
+Ensure:
+
+No horizontal scrolling.
+
+Cards stack properly.
+
+Charts resize.
+
+Map works on mobile.
+
+====================================================
+26. COMPONENT ARCHITECTURE
+====================================================
+
+Create reusable components:
+
+Navbar
+Sidebar
+MobileNav
+DashboardCard
+DonationCard
+OrganizationCard
+VolunteerCard
+StatusBadge
+Map
+NotificationBell
+Modal
+DataTable
+ChartCard
+LoadingSkeleton
+EmptyState
+ErrorState
+ConfirmDialog
+Toast
+AIInsightCard
+ImpactCard
+
+Use reusable components instead of duplicating code.
+
+====================================================
+27. API ROUTES
+====================================================
+
+Create secure server-side routes such as:
+
+/api/ai/analyze-donation
+/api/ai/generate-insights
+/api/ai/analyze-feedback
+/api/notifications
+/api/matching/find-organizations
+/api/impact
+
+Never expose secret API keys in client-side JavaScript.
+
+====================================================
+28. ENVIRONMENT VARIABLES
+====================================================
+
+Create:
+
+.env.example
+
+with:
+
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=
+
+GEMINI_API_KEY=
+
+Optional:
+
+NEXT_PUBLIC_MAP_DEFAULT_LAT=
+NEXT_PUBLIC_MAP_DEFAULT_LNG=
+
+IMPORTANT:
+
+Never hardcode real credentials.
+
+Never commit .env.local.
+
+Add .env.local to .gitignore.
+
+Use the current Supabase publishable-key convention.
+
+====================================================
+29. SUPABASE CLIENT
+====================================================
+
+Install:
+
+@supabase/supabase-js
+
+Create:
+
+lib/supabase/client.ts
+
+and appropriate server utilities.
+
+Use:
+
+NEXT_PUBLIC_SUPABASE_URL
+
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
+
+Do NOT use:
+
+SUPABASE_SERVICE_ROLE_KEY
+
+inside browser/client code.
+
+====================================================
+30. GEMINI INTEGRATION
+====================================================
+
+Create server-side Gemini utility.
+
+Use:
+
+GEMINI_API_KEY
+
+Only server-side.
+
+Create functions:
+
+analyzeDonation()
+analyzeFeedback()
+generateWasteInsights()
+generateMatchingExplanation()
+
+If GEMINI_API_KEY is missing:
+
+The app must still work.
+
+Show:
+
+"AI insights are currently unavailable."
+
+Do not crash the application.
+
+====================================================
+31. MAP API
+====================================================
+
+Use:
+
+Leaflet
+OpenStreetMap
+
+Do not require Google Maps API.
+
+For geocoding, use a safe server-side approach.
+
+Do not make excessive requests to public geocoding services.
+
+Cache geocoding results when possible.
+
+====================================================
+32. DEMO DATA
+====================================================
+
+Create a seed script.
+
+Add realistic demo data:
+
+20 donations
+10 organizations
+15 volunteers
+30 feedback entries
+30 waste logs
+20 pickup tasks
+
+Use Indian cities for demo data:
+
+Hyderabad
+Bangalore
+Chennai
+Mumbai
+Delhi
+Pune
+
+But clearly label demo accounts/data.
+
+====================================================
+33. DEMO ACCOUNTS
+====================================================
+
+Create documentation explaining how to create:
+
+Demo Donor
+Demo NGO
+Demo Volunteer
+Demo Admin
+
+Do not hardcode passwords into frontend code.
+
+====================================================
+34. ERROR HANDLING
+====================================================
+
+Every API/database operation must handle:
+
+loading
+success
+empty
+error
+
+Use toast notifications.
+
+Example:
+
+"Donation created successfully."
+
+"Unable to find nearby organizations."
+
+"Your session has expired."
+
+====================================================
+35. SECURITY
+====================================================
+
+Implement:
+
+Supabase RLS
+Input validation
+Zod validation
+Authentication guards
+Role authorization
+Server-side API secrets
+Secure file uploads
+
+Never trust role information from frontend requests.
+
+====================================================
+36. ACCESSIBILITY
+====================================================
+
+Use:
+
+semantic HTML
+ARIA labels
+keyboard navigation
+accessible buttons
+good contrast
+focus states
+
+====================================================
+37. PERFORMANCE
+====================================================
+
+Optimize:
+
+Images
+Database queries
+Charts
+Maps
+API calls
+
+Use pagination for large datasets.
+
+Do not load every donation at once.
+
+====================================================
+38. PROJECT STRUCTURE
+====================================================
+
+Use a clean structure similar to:
+
+app/
+  page.tsx
+  login/
+  signup/
+  donor/
+  ngo/
+  volunteer/
+  admin/
+  feedback/
+  impact/
+  api/
+
+components/
+  ui/
+  dashboard/
+  donation/
+  maps/
+  charts/
+  notifications/
+
+lib/
+  supabase/
+  ai/
+  maps/
+  matching/
+  validation/
+
+types/
+
+public/
+
+supabase/
+  migrations/
+  seed.sql
+
+====================================================
+39. UI DETAILS
+====================================================
+
+Landing page:
+
+Premium hero.
+
+Animated statistics.
+
+Gradient CTA.
+
+Dashboard:
+
+Dark sidebar.
+
+Top navbar.
+
+Glass cards.
+
+Charts.
+
+Tables.
+
+Maps.
+
+Status badges.
+
+Use subtle animations.
+
+Donation status colors:
+
+AVAILABLE → blue
+CLAIMED → purple
+PICKUP_ASSIGNED → yellow
+PICKED_UP → cyan
+DELIVERED → green
+COMPLETED → green
+EXPIRED → red
+CANCELLED → gray
+
+Do not overuse colors.
+
+====================================================
+40. IMPORTANT UX RULE
+====================================================
+
+Every button must actually work.
+
+Do NOT create fake buttons.
+
+For example:
+
+"Claim Donation"
+
+must actually update Supabase.
+
+"Accept Pickup"
+
+must actually create/update pickup_tasks.
+
+"Donate Food"
+
+must actually insert into donations.
+
+"Mark Delivered"
+
+must actually update the database.
+
+Charts must use database data.
+
+Notifications must use database data.
+
+====================================================
+41. DATABASE MIGRATION
+====================================================
+
+Generate SQL migration files for all tables.
+
+Include:
+
+CREATE TABLE
+ALTER TABLE
+INDEXES
+RLS
+POLICIES
+TRIGGERS where needed
+
+Automatically update:
+
+updated_at
+
+using PostgreSQL triggers.
+
+Create indexes for:
+
+donor_id
+status
+expiry_at
+latitude
+longitude
+created_at
+
+====================================================
+42. ROLE-BASED NAVIGATION
+====================================================
+
+DONOR navigation:
+
+Dashboard
+Donate Food
+My Donations
+Pickup Status
+Impact
+Profile
+
+NGO navigation:
+
+Dashboard
+Available Food
+Map
+Claimed Donations
+Pickup Requests
+Impact
+Profile
+
+VOLUNTEER navigation:
+
+Dashboard
+Available Pickups
+My Pickups
+Map
+History
+Profile
+
+ADMIN navigation:
+
+Dashboard
+Donations
+Organizations
+Volunteers
+Waste Analytics
+Feedback
+AI Insights
+Users
+Settings
+
+====================================================
+43. LANDING PAGE FOOTER
+====================================================
+
+Include:
+
+FoodBridge
+
+About
+How it Works
+Organizations
+Impact
+Contact
+
+Social icons
+
+Privacy Policy
+Terms
+
+"Built to reduce food waste and strengthen communities."
+
+====================================================
+44. REPLIT DEVELOPMENT WORKFLOW
+====================================================
+
+Before writing large amounts of code:
+
+1. Inspect the current Replit project.
+2. Determine whether it is empty or contains existing code.
+3. Install required dependencies.
+4. Create project architecture.
+5. Create Supabase integration.
+6. Create database schema.
+7. Create authentication.
+8. Build landing page.
+9. Build dashboards.
+10. Build donation workflow.
+11. Build organization matching.
+12. Build maps.
+13. Build volunteer workflow.
+14. Add Gemini.
+15. Add realtime.
+16. Add analytics.
+17. Test every flow.
+18. Fix errors.
+19. Improve responsive UI.
+20. Prepare deployment.
+
+Do not stop after generating only the frontend.
+
+====================================================
+45. TESTING
+====================================================
+
+Test these complete workflows:
+
+TEST 1:
+
+Donor signup
+→ Login
+→ Create donation
+→ Donation appears in database
+→ NGO sees donation
+→ NGO claims donation
+→ Donor sees CLAIMED
+
+TEST 2:
+
+NGO claims donation
+→ Volunteer receives pickup
+→ Volunteer accepts
+→ Pickup status changes
+→ Volunteer marks PICKED_UP
+→ Volunteer marks DELIVERED
+→ Donation becomes COMPLETED
+
+TEST 3:
+
+Student/user submits feedback
+→ Speech-to-text
+→ Gemini sentiment analysis
+→ Supabase database
+→ Admin dashboard displays feedback
+
+TEST 4:
+
+Admin dashboard
+→ Fetch real database data
+→ Display charts
+→ Generate AI insight
+
+TEST 5:
+
+Realtime
+
+Open donor and NGO dashboards in different browser tabs.
+
+When NGO claims donation:
+
+Donor dashboard should update without refreshing.
+
+====================================================
+46. FINAL QUALITY CHECK
+====================================================
+
+Before saying the project is complete:
+
+Run:
+
+npm install
+npm run lint
+npm run build
+
+Fix all errors.
+
+Check:
+
+Authentication
+Authorization
+Supabase
+Database
+RLS
+Realtime
+Maps
+Gemini
+Forms
+File uploads
+Mobile responsiveness
+Charts
+Navigation
+404 pages
+Loading states
+Error states
+
+No TypeScript errors.
+
+No console errors.
+
+No broken links.
+
+No fake functionality.
+
+====================================================
+47. README
+====================================================
+
+Create a professional README containing:
+
+Project overview
+Problem
+Solution
+Features
+Architecture
+Tech stack
+Database schema
+Supabase setup
+Gemini setup
+Environment variables
+Local development
+Replit setup
+Deployment
+Demo accounts
+Screenshots section
+Future improvements
+
+====================================================
+48. MOST IMPORTANT REQUIREMENT
+====================================================
+
+The final application should feel like:
+
+"ZeroPlate + modern AI food rescue platform + Supabase + real-time
+donation logistics."
+
+But it must have ORIGINAL:
+
+Branding
+UI components
+Copy
+Database structure
+User flows
+Design details
+
+Do not copy the original website's exact text, logo, source code,
+or proprietary assets.
+
+====================================================
+49. START NOW
+====================================================
+
+First inspect the current project.
+
+Then create the architecture.
+
+Then implement the application step by step.
+
+Do NOT ask me to manually create files that you can create yourself.
+
+When a secret is required, create the correct environment variable
+placeholder and continue building.
+
+If Supabase credentials are not available yet, use environment variables
+and continue with the complete application.
+
+At the end provide:
+
+1. What was built
+2. Environment variables required
+3. Supabase setup steps
+4. Database migration instructions
+5. Gemini API setup
+6. How to run
+7. How to test each role
+8. Deployment instructions
+9. Any remaining configuration
+
+Start building now.

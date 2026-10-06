@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "FoodBridge"
+description = "A food rescue platform that connects surplus food donors with community organizations and volunteers, with donation logistics, impact tracking, maps, and AI-assisted prioritization."
+version = "1.0.0"
+id = "artifacts/foodbridge"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 19523
+
+[services.development]
+run = "pnpm --filter @workspace/foodbridge run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/foodbridge", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/foodbridge/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "19523"
+BASE_PATH = "/"
