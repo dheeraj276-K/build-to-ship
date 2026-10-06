@@ -10,6 +10,10 @@ servers:
 tags:
   - name: health
     description: Health operations
+  - name: foodbridge-ai
+    description: AI-assisted food rescue recommendations and analysis
+  - name: matching
+    description: Donation-to-organization matching
 paths:
   /healthz:
     get:
@@ -24,6 +28,86 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+  /ai/analyze-donation:
+    post:
+      operationId: analyzeDonation
+      tags: [foodbridge-ai]
+      summary: Analyze a surplus food donation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DonationAnalysisInput"
+      responses:
+        "200":
+          description: Donation analysis
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DonationAnalysis"
+        "400":
+          description: Invalid request
+  /ai/generate-insights:
+    post:
+      operationId: generateWasteInsights
+      tags: [foodbridge-ai]
+      summary: Generate insights from aggregated food rescue data
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WasteInsightInput"
+      responses:
+        "200":
+          description: Generated insights
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WasteInsightReport"
+        "400":
+          description: Invalid request
+  /ai/analyze-feedback:
+    post:
+      operationId: analyzeFeedback
+      tags: [foodbridge-ai]
+      summary: Classify and summarize user feedback
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FeedbackAnalysisInput"
+      responses:
+        "200":
+          description: Feedback analysis
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FeedbackAnalysis"
+        "400":
+          description: Invalid request
+  /matching/find-organizations:
+    post:
+      operationId: findMatchingOrganizations
+      tags: [matching]
+      summary: Rank eligible organizations near a donation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OrganizationMatchInput"
+      responses:
+        "200":
+          description: Ranked nearby organizations
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrganizationMatchResult"
+        "400":
+          description: Invalid request
 components:
   schemas:
     HealthStatus:
@@ -33,4 +117,118 @@ components:
           type: string
       required:
         - status
+    DonationAnalysisInput:
+      type: object
+      required: [foodName, foodCategory, quantity, quantityUnit, preparedAt, expiryAt, foodCondition]
+      properties:
+        foodName: { type: string, minLength: 1, maxLength: 120 }
+        foodCategory: { type: string, minLength: 1, maxLength: 80 }
+        description: { type: string, maxLength: 1000 }
+        quantity: { type: number, exclusiveMinimum: 0, maximum: 100000 }
+        quantityUnit: { type: string, minLength: 1, maxLength: 30 }
+        preparedAt: { type: string, format: date-time }
+        expiryAt: { type: string, format: date-time }
+        foodCondition: { type: string, minLength: 1, maxLength: 80 }
+    DonationAnalysis:
+      type: object
+      required: [category, urgency, recipientType, safetyWarning, pickupPriority, suggestedPickupWindow, disclaimer]
+      properties:
+        category: { type: string }
+        urgency: { type: string, enum: [LOW, MEDIUM, HIGH, CRITICAL] }
+        recipientType: { type: string }
+        safetyWarning: { type: string }
+        pickupPriority: { type: string }
+        suggestedPickupWindow: { type: string }
+        disclaimer: { type: string }
+    WasteInsightInput:
+      type: object
+      required: [period, totalDonations, mealsRescued, foodSavedKg, wasteEntries]
+      properties:
+        period: { type: string, maxLength: 80 }
+        totalDonations: { type: integer, minimum: 0 }
+        mealsRescued: { type: integer, minimum: 0 }
+        foodSavedKg: { type: number, minimum: 0 }
+        wasteEntries:
+          type: array
+          maxItems: 120
+          items:
+            type: object
+            required: [foodName, quantity, reason, createdAt]
+            properties:
+              foodName: { type: string, maxLength: 120 }
+              quantity: { type: number, minimum: 0 }
+              reason: { type: string, maxLength: 300 }
+              createdAt: { type: string, format: date-time }
+    WasteInsightReport:
+      type: object
+      required: [available, message, insights]
+      properties:
+        available: { type: boolean }
+        message: { type: string }
+        insights:
+          type: array
+          maxItems: 5
+          items:
+            type: object
+            required: [title, detail, category, confidence]
+            properties:
+              title: { type: string }
+              detail: { type: string }
+              category: { type: string }
+              confidence: { type: string, enum: [LOW, MEDIUM, HIGH] }
+    FeedbackAnalysisInput:
+      type: object
+      required: [rating, category, message]
+      properties:
+        rating: { type: integer, minimum: 1, maximum: 5 }
+        category: { type: string, minLength: 1, maxLength: 80 }
+        message: { type: string, minLength: 1, maxLength: 2000 }
+    FeedbackAnalysis:
+      type: object
+      required: [sentiment, summary, possibleImprovement]
+      properties:
+        sentiment: { type: string, enum: [POSITIVE, NEUTRAL, NEGATIVE] }
+        summary: { type: string }
+        possibleImprovement: { type: string }
+    OrganizationMatchInput:
+      type: object
+      required: [latitude, longitude, foodCategory, quantity, quantityUnit, expiryAt, organizations]
+      properties:
+        latitude: { type: number, minimum: -90, maximum: 90 }
+        longitude: { type: number, minimum: -180, maximum: 180 }
+        foodCategory: { type: string, maxLength: 80 }
+        quantity: { type: number, minimum: 0 }
+        quantityUnit: { type: string, maxLength: 30 }
+        expiryAt: { type: string, format: date-time }
+        organizations:
+          type: array
+          maxItems: 100
+          items:
+            type: object
+            required: [id, name, latitude, longitude, capacity, acceptedFoodTypes, verified]
+            properties:
+              id: { type: string }
+              name: { type: string, maxLength: 160 }
+              latitude: { type: number, minimum: -90, maximum: 90 }
+              longitude: { type: number, minimum: -180, maximum: 180 }
+              capacity: { type: number, minimum: 0 }
+              acceptedFoodTypes:
+                type: array
+                items: { type: string, maxLength: 80 }
+              verified: { type: boolean }
+    OrganizationMatchResult:
+      type: object
+      required: [matches]
+      properties:
+        matches:
+          type: array
+          items:
+            type: object
+            required: [id, name, distanceKm, matchScore, reason]
+            properties:
+              id: { type: string }
+              name: { type: string }
+              distanceKm: { type: number }
+              matchScore: { type: integer, minimum: 0, maximum: 100 }
+              reason: { type: string }
 
